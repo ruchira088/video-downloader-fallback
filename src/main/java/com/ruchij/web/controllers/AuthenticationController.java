@@ -1,26 +1,35 @@
 package com.ruchij.web.controllers;
 
 import com.ruchij.daos.user.models.User;
-import com.ruchij.services.authentication.AuthenticationService;
 import com.ruchij.web.requests.LoginRequest;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authentication")
 public class AuthenticationController {
-    private final AuthenticationService authenticationService;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    public AuthenticationController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/login")
     public User login(@RequestBody LoginRequest loginRequest) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication =
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken.unauthenticated(
+                    loginRequest.getEmail(),
+                    loginRequest.getPassword()
+                )
+            );
 
-        return authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword(), securityContext);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return (User) authentication.getPrincipal();
     }
 
     @GetMapping("/user")
