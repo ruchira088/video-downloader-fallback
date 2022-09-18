@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@RestController
 @RequestMapping("/user")
+@RestController
 public class UserController {
     private final UserService userService;
 
@@ -31,12 +31,12 @@ public class UserController {
         );
     }
 
-    @GetMapping("/{user-id}")
+    @GetMapping("/id/{user-id}")
     public User get(@PathVariable("user-id") String userId) throws ResourceNotFoundException {
         return userService.getById(userId);
     }
 
-    @PutMapping("/{user-id}")
+    @PutMapping("/id/{user-id}")
     public User update(@PathVariable("user-id") String userId, @RequestBody UpdateUserRequest updateUserRequest)
         throws ResourceNotFoundException {
         return userService.update(

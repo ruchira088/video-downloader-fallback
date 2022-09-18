@@ -27,15 +27,13 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
         return httpSecurity
             .authorizeHttpRequests(requests ->
                 requests
-                    .antMatchers(HttpMethod.POST, "/user").permitAll()
-                    .anyRequest().permitAll()
+                    .antMatchers(HttpMethod.POST, "/user", "/authentication/login").permitAll()
+                    .anyRequest().authenticated()
             )
             .csrf().disable()
             .build();
-
     }
 }
