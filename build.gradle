@@ -1,3 +1,7 @@
+import com.fasterxml.jackson.databind.ObjectMapper
+
+import java.time.Instant
+
 plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
@@ -36,4 +40,31 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+task information {
+    doLast {
+        def file = new File("$buildDir/resources/main/information.json")
+        file.parentFile.mkdirs()
+
+        def serviceInformation =
+                Map.of(
+                        "group", project.group,
+                        "name", project.name,
+                        "version", project.version,
+                        "gradleVersion", gradle.gradleVersion,
+                        "buildTimestamp", Instant.now().toString(),
+                        "gitBranch", "git rev-parse --abbrev-ref HEAD".execute().text.trim(),
+                        "gitCommit", "git rev-parse --short HEAD".execute().text.trim()
+                )
+
+        file.withWriter {
+            writer ->
+                new ObjectMapper().writeValue(writer, serviceInformation)
+        }
+    }
+}
+
+classes {
+    dependsOn information
 }

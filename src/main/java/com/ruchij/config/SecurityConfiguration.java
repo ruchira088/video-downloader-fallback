@@ -31,6 +31,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(requests ->
                 requests
                     .antMatchers(HttpMethod.POST, "/user", "/authentication/login").permitAll()
+                    .antMatchers(HttpMethod.GET, "/service/**").permitAll()
                     .anyRequest().authenticated()
             )
             .csrf().disable()
