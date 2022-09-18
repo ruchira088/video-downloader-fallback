@@ -1,9 +1,8 @@
-package com.ruchij.daos.credentials.models;
+package com.ruchij.daos.schedules.models;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +11,26 @@ import java.time.Instant;
 
 @Setter
 @Getter
-@Entity
-public class Credentials {
+@Entity(name = "scheduled_url")
+public class ScheduledUrl {
     @Id
-    private String userId;
+    private String id;
 
     @CreationTimestamp
     @Column(nullable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
-    private Instant updatedAt;
+    private String userId;
 
     @Column(nullable = false)
-    private String hashedPassword;
+    private String url;
 
-    protected Credentials() {}
+    protected ScheduledUrl() {
+    }
 
-    public Credentials(String userId, String hashedPassword) {
+    public ScheduledUrl(String id, String url, String userId) {
+        this.id = id;
+        this.url = url;
         this.userId = userId;
-        this.hashedPassword = hashedPassword;
     }
 }

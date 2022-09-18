@@ -31,13 +31,13 @@ public class UserController {
         );
     }
 
-    @GetMapping("/id/{user-id}")
-    public User get(@PathVariable("user-id") String userId) throws ResourceNotFoundException {
+    @GetMapping("/id/{userId}")
+    public User get(@PathVariable String userId) throws ResourceNotFoundException {
         return userService.getById(userId);
     }
 
-    @PutMapping("/id/{user-id}")
-    public User update(@PathVariable("user-id") String userId, @RequestBody UpdateUserRequest updateUserRequest)
+    @PutMapping("/id/{userId}")
+    public User update(@PathVariable String userId, @RequestBody UpdateUserRequest updateUserRequest)
         throws ResourceNotFoundException {
         return userService.update(
             userId,
