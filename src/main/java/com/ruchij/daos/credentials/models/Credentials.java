@@ -1,5 +1,7 @@
 package com.ruchij.daos.credentials.models;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -8,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 public class Credentials {
     @Id
