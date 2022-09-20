@@ -47,6 +47,10 @@ task information {
         def file = new File("$buildDir/resources/main/information.json")
         file.parentFile.mkdirs()
 
+        if (file.exists()) {
+            file.delete()
+        }
+
         def serviceInformation =
                 Map.of(
                         "group", project.group,

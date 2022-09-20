@@ -1,7 +1,6 @@
 package com.ruchij.services.health;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ruchij.services.clock.Clock;
 import com.ruchij.services.health.models.HealthCheck;
 import com.ruchij.services.health.models.ServiceInformation;
 import com.ruchij.services.system.SystemService;
@@ -18,12 +17,10 @@ public class HealthServiceImpl implements HealthService {
     private static final String INFORMATION_FILE = "information.json";
 
     private final SystemService systemService;
-    private final Clock clock;
     private final ObjectMapper objectMapper;
 
-    public HealthServiceImpl(SystemService systemService, Clock clock, ObjectMapper objectMapper) {
+    public HealthServiceImpl(SystemService systemService, ObjectMapper objectMapper) {
         this.systemService = systemService;
-        this.clock = clock;
         this.objectMapper = objectMapper;
     }
 
@@ -32,7 +29,7 @@ public class HealthServiceImpl implements HealthService {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(INFORMATION_FILE)) {
             ApplicationInformation applicationInformation = objectMapper.readValue(inputStream, ApplicationInformation.class);
             String javaVersion = systemService.properties().getProperty("java.version", "unknown");
-            Instant instant = clock.timestamp();
+            Instant instant = systemService.timestamp();
 
             return new ServiceInformation(
                 applicationInformation.name,
