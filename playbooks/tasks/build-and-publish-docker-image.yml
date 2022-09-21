@@ -1,0 +1,14 @@
+- name: Gather git information
+  import_tasks: git-info.yml
+
+- name: Clean and build application
+  shell: cd ../ && ./gradlew clean build bootJar
+
+- name: Build Docker image
+  when: not publish
+  shell: |
+    docker build \
+      -f docker/Dockerfile \
+      -t ghcr.io/ruchira088/video-downloader-fallback-api:{{ git_branch }} \
+      -t ghcr.io/ruchira088/video-downloader-fallback-api:{{ git_branch }}-{{ git_commit }} \
+      ../

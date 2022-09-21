@@ -72,3 +72,7 @@ task information {
 classes {
     dependsOn information
 }
+
+bootJar {
+    archiveName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+}
