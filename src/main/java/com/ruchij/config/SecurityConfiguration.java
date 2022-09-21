@@ -34,6 +34,11 @@ public class SecurityConfiguration {
                     .antMatchers(HttpMethod.GET, "/service/**").permitAll()
                     .anyRequest().authenticated()
             )
+            .formLogin(formLoginConfigurer ->
+                formLoginConfigurer
+                    .defaultSuccessUrl("/authentication/user")
+                    .permitAll()
+            )
             .csrf().disable()
             .build();
     }
