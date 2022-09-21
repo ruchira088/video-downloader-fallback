@@ -6,10 +6,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     ports:
       - 8080:8080
+    environment:
+      DATABASE_URL: "jdbc:postgresql://postgres:5432/video-downloader-fallback-api"
+      DATABASE_USER: "admin"
+      DATABASE_PASSWORD: "password"
 
   postgres:
     image: postgres
@@ -25,14 +27,3 @@ services:
       POSTGRES_DB: "video-downloader-fallback-api"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "password"
-
-  redis:
-    image: redis
-    command: "redis-server --requirepass redis-password"
-    healthcheck:
-      test: "redis-cli ping"
-      start_period: "5s"
-      interval: "5s"
-      timeout: "3s"
-    ports:
-      - 6379:6379

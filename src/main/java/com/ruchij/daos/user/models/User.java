@@ -8,12 +8,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Setter
 @Getter
 @Entity(name = "api_user")
-public class User {
+public class User implements Serializable {
     @Id
     private String id;
 

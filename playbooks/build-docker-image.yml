@@ -10,7 +10,6 @@
       shell: cd ../ && ./gradlew clean build bootJar
 
     - name: Build Docker image
-      when: not publish
       shell: |
         docker build \
           -f docker/Dockerfile \
