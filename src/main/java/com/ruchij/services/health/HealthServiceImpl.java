@@ -1,54 +1,46 @@
 package com.ruchij.services.health;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruchij.services.health.models.ApplicationInformation;
 import com.ruchij.services.health.models.HealthCheck;
 import com.ruchij.services.health.models.HealthStatus;
 import com.ruchij.services.health.models.ServiceInformation;
 import com.ruchij.services.system.SystemService;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class HealthServiceImpl implements HealthService {
-    private static final String INFORMATION_FILE = "information.json";
 
     private final JdbcTemplate jdbcTemplate;
     private final SystemService systemService;
-    private final ObjectMapper objectMapper;
+    private final ApplicationInformation applicationInformation;
 
-    public HealthServiceImpl(JdbcTemplate jdbcTemplate, SystemService systemService, ObjectMapper objectMapper) {
+    public HealthServiceImpl(JdbcTemplate jdbcTemplate, SystemService systemService, ApplicationInformation applicationInformation) {
         this.jdbcTemplate = jdbcTemplate;
         this.systemService = systemService;
-        this.objectMapper = objectMapper;
+        this.applicationInformation = applicationInformation;
     }
 
     @Override
-    public ServiceInformation serviceInformation() throws IOException {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(INFORMATION_FILE)) {
-            ApplicationInformation applicationInformation = objectMapper.readValue(inputStream, ApplicationInformation.class);
-            String javaVersion = systemService.properties().getProperty("java.version", "unknown");
-            Instant instant = systemService.timestamp();
+    public ServiceInformation serviceInformation() {
+        String javaVersion = systemService.properties().getProperty("java.version", "unknown");
+        Instant instant = systemService.timestamp();
 
-            return new ServiceInformation(
-                applicationInformation.name,
-                applicationInformation.version,
-                applicationInformation.group,
-                javaVersion,
-                applicationInformation.gradleVersion,
-                instant,
-                applicationInformation.gitBranch,
-                applicationInformation.gitCommit,
-                applicationInformation.buildTimestamp
-            );
-        }
+        return new ServiceInformation(
+            applicationInformation.getName(),
+            applicationInformation.getVersion(),
+            applicationInformation.getGroup(),
+            javaVersion,
+            applicationInformation.getGradleVersion(),
+            instant,
+            applicationInformation.getGitBranch(),
+            applicationInformation.getGitCommit(),
+            applicationInformation.getBuildTimestamp()
+        );
     }
 
     @Override
@@ -70,17 +62,5 @@ public class HealthServiceImpl implements HealthService {
         } catch (Exception exception) {
             return HealthStatus.UNHEALTHY;
         }
-    }
-
-    @Setter
-    @Getter
-    public static class ApplicationInformation {
-        private String name;
-        private String version;
-        private String group;
-        private String gradleVersion;
-        private String gitBranch;
-        private String gitCommit;
-        private Instant buildTimestamp;
     }
 }
