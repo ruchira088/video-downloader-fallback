@@ -10,6 +10,7 @@ import com.ruchij.services.generator.IdGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
         this.idGenerator = idGenerator;
     }
 
+    @Transactional
     @Override
     public User create(String email, String password, String firstName, String lastName) throws ResourceConflictException {
         Optional<User> existingUser = userRepository.findUserByEmail(email);
