@@ -7,6 +7,7 @@ import com.ruchij.exceptions.ResourceNotFoundException;
 import com.ruchij.services.schedules.SchedulingService;
 import com.ruchij.web.requests.InsertScheduledUrlRequest;
 import com.ruchij.web.response.ResultsList;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,13 @@ public class SchedulingController {
     }
 
     @GetMapping
-    public ResultsList<ScheduledUrl> getAll() {
-        return new ResultsList<>(schedulingService.getByUserId(getUser().getId()));
+    public ResultsList<ScheduledUrl> getAll(Pageable pageable) {
+        return new ResultsList<>(schedulingService.getAll(pageable).toList(), pageable);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResultsList<ScheduledUrl> getByUser(@PathVariable String userId, Pageable pageable) {
+        return new ResultsList<>(schedulingService.getByUserId(userId, pageable).toList(), pageable);
     }
 
     @GetMapping("/id/{scheduledUrlId}")
@@ -38,8 +44,8 @@ public class SchedulingController {
     }
 
     @GetMapping("/search")
-    public ResultsList<ScheduledUrl> search(@RequestParam String url) {
-        return new ResultsList<>(schedulingService.findByUrl(url, getUser().getId()).stream().toList());
+    public ResultsList<ScheduledUrl> search(@RequestParam String url, Pageable pageable) {
+        return new ResultsList<>(schedulingService.findByUrl(url, getUser().getId()).stream().toList(), pageable);
     }
 
     private User getUser() {

@@ -6,6 +6,9 @@ import com.ruchij.exceptions.ResourceConflictException;
 import com.ruchij.exceptions.ResourceNotFoundException;
 import com.ruchij.services.generator.IdGenerator;
 import com.ruchij.services.system.SystemService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -47,8 +50,15 @@ public class SchedulingServiceImpl implements SchedulingService {
             .orElseThrow(() -> new ResourceNotFoundException("Unable to find id=%s and userId=%s".formatted(id, userId)));
     }
 
+    @PreAuthorize("hasPermission(#userId, 'user', 'read')")
     @Override
-    public List<ScheduledUrl> getByUserId(String userId) {
-        return scheduledUrlRepository.findScheduledUrlsByUserId(userId);
+    public Page<ScheduledUrl> getByUserId(String userId, Pageable pageable) {
+        return scheduledUrlRepository.findScheduledUrlsByUserId(userId, pageable);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public Page<ScheduledUrl> getAll(Pageable pageable) {
+        return scheduledUrlRepository.findAll(pageable);
     }
 }

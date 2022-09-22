@@ -1,5 +1,8 @@
 package com.ruchij.services.user;
 
+import com.ruchij.daos.authorization.AuthorizationRepository;
+import com.ruchij.daos.authorization.models.Role;
+import com.ruchij.daos.authorization.models.RoleType;
 import com.ruchij.daos.credentials.CredentialsRepository;
 import com.ruchij.daos.credentials.models.Credentials;
 import com.ruchij.daos.user.UserRepository;
@@ -14,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -22,6 +24,7 @@ import java.util.stream.Stream;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CredentialsRepository credentialsRepository;
+    private final AuthorizationRepository authorizationRepository;
     private final PasswordEncoder passwordEncoder;
     private final SystemService systemService;
     private final IdGenerator idGenerator;
@@ -29,12 +32,14 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(
         UserRepository userRepository,
         CredentialsRepository credentialsRepository,
+        AuthorizationRepository authorizationRepository,
         PasswordEncoder passwordEncoder,
         SystemService systemService,
         IdGenerator idGenerator
     ) {
         this.userRepository = userRepository;
         this.credentialsRepository = credentialsRepository;
+        this.authorizationRepository = authorizationRepository;
         this.passwordEncoder = passwordEncoder;
         this.systemService = systemService;
         this.idGenerator = idGenerator;
@@ -43,9 +48,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User create(String email, String password, String firstName, String lastName) throws ResourceConflictException {
-        Optional<User> existingUser = userRepository.findUserByEmail(email);
-
-        if (existingUser.isPresent()) {
+        if (userRepository.existsUserByEmail(email)) {
             throw new ResourceConflictException("User with email=%s already exists".formatted(email));
         }
 
@@ -56,6 +59,9 @@ public class UserServiceImpl implements UserService {
 
         String encodedPassword = passwordEncoder.encode(password);
         credentialsRepository.save(new Credentials(userId, encodedPassword, timestamp));
+
+        String roleId = idGenerator.generate();
+        authorizationRepository.save(new Role(roleId, timestamp, userId, RoleType.USER));
 
         return user;
     }
