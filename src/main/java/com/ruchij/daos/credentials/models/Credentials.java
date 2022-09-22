@@ -24,7 +24,8 @@ public class Credentials {
     @Column(nullable = false)
     private String hashedPassword;
 
-    protected Credentials() {}
+    protected Credentials() {
+    }
 
     public Credentials(String userId, String hashedPassword, Instant timestamp) {
         this.userId = userId;

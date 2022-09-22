@@ -27,7 +27,8 @@ public class Role implements Serializable {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
-    protected Role() {}
+    protected Role() {
+    }
 
     public Role(String id, Instant createdAt, String userId, RoleType roleType) {
         this.id = id;
