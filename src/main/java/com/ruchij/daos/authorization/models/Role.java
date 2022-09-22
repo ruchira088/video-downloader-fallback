@@ -1,5 +1,6 @@
 package com.ruchij.daos.authorization.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +15,11 @@ public class Role implements Serializable {
     @Id
     private String id;
 
+    @JsonIgnore
     @Column(nullable = false)
     private Instant createdAt;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String userId;
 

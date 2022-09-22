@@ -50,7 +50,7 @@ public class SchedulingServiceImpl implements SchedulingService {
             .orElseThrow(() -> new ResourceNotFoundException("Unable to find id=%s and userId=%s".formatted(id, userId)));
     }
 
-    @PreAuthorize("hasPermission(#userId, 'user', 'read')")
+    @PreAuthorize("hasPermission(#userId, 'USER', 'READ')")
     @Override
     public Page<ScheduledUrl> getByUserId(String userId, Pageable pageable) {
         return scheduledUrlRepository.findScheduledUrlsByUserId(userId, pageable);

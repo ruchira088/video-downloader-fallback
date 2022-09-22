@@ -1,5 +1,6 @@
 package com.ruchij.daos.user.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruchij.daos.authorization.models.Role;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -20,6 +20,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     private Instant createdAt;
 
+    @JsonIgnore
     @Column(nullable = false)
     private Instant updatedAt;
 

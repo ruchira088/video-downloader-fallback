@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -61,11 +62,14 @@ public class UserServiceImpl implements UserService {
         credentialsRepository.save(new Credentials(userId, encodedPassword, timestamp));
 
         String roleId = idGenerator.generate();
-        authorizationRepository.save(new Role(roleId, timestamp, userId, RoleType.USER));
+        Role role = authorizationRepository.save(new Role(roleId, timestamp, userId, RoleType.USER));
+
+        user.setRoles(List.of(role));
 
         return user;
     }
 
+    @PreAuthorize("hasPermission(#userId, 'USER', 'WRITE')")
     @Override
     public User update(String userId, Optional<String> email, Optional<String> firstName, Optional<String> lastName)
         throws ResourceNotFoundException {
@@ -83,7 +87,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @PreAuthorize("hasPermission(#userId, 'USER', 'read')")
+    @PreAuthorize("hasPermission(#userId, 'USER', 'READ')")
     @Override
     public User getById(String userId) throws ResourceNotFoundException {
         return userRepository.findById(userId)

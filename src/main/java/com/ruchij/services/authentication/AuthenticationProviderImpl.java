@@ -7,10 +7,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class AuthenticationProviderImpl implements AuthenticationProvider {
@@ -37,7 +36,15 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
             .flatMap(user ->
                 credentialsRepository.findCredentialsByUserId(user.getId())
                     .filter(credentials -> passwordEncoder.matches(password, credentials.getHashedPassword()))
-                    .map(credentials -> UsernamePasswordAuthenticationToken.authenticated(user, credentials, List.of()))
+                    .map(credentials ->
+                        UsernamePasswordAuthenticationToken.authenticated(
+                            user,
+                            credentials,
+                            user.getRoles().stream()
+                                .map(role -> new SimpleGrantedAuthority(role.getRoleType().name()))
+                                .toList()
+                        )
+                    )
             )
             .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
     }
