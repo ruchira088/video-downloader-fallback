@@ -2,7 +2,6 @@ package com.ruchij.daos.schedules.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,10 +15,10 @@ public class ScheduledUrl {
     @Id
     private String id;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private Instant createdAt;
 
+    @Column(nullable = false)
     private String userId;
 
     @Column(nullable = false)
@@ -28,9 +27,10 @@ public class ScheduledUrl {
     protected ScheduledUrl() {
     }
 
-    public ScheduledUrl(String id, String url, String userId) {
+    public ScheduledUrl(String id, String url, String userId, Instant createdAt) {
         this.id = id;
         this.url = url;
         this.userId = userId;
+        this.createdAt = createdAt;
     }
 }

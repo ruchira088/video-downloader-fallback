@@ -2,8 +2,6 @@ package com.ruchij.daos.user.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,11 +16,10 @@ public class User implements Serializable {
     @Id
     private String id;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @Column(nullable = false)
     private Instant updatedAt;
 
     @Column(unique = true, nullable = false)
@@ -36,10 +33,12 @@ public class User implements Serializable {
     protected User() {
     }
 
-    public User(String id, String email, String firstName, String lastName) {
+    public User(String id, String email, String firstName, String lastName, Instant timestamp) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.createdAt = timestamp;
+        this.updatedAt = timestamp;
     }
 }

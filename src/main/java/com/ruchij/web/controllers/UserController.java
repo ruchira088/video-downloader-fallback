@@ -7,6 +7,7 @@ import com.ruchij.services.user.UserService;
 import com.ruchij.web.requests.CreateUserRequest;
 import com.ruchij.web.requests.UpdateUserRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;

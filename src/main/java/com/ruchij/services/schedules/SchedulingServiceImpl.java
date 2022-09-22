@@ -5,18 +5,22 @@ import com.ruchij.daos.schedules.models.ScheduledUrl;
 import com.ruchij.exceptions.ResourceConflictException;
 import com.ruchij.exceptions.ResourceNotFoundException;
 import com.ruchij.services.generator.IdGenerator;
+import com.ruchij.services.system.SystemService;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SchedulingServiceImpl implements SchedulingService {
     private final ScheduledUrlRepository scheduledUrlRepository;
+    private final SystemService systemService;
     private final IdGenerator idGenerator;
 
-    public SchedulingServiceImpl(ScheduledUrlRepository scheduledUrlRepository, IdGenerator idGenerator) {
+    public SchedulingServiceImpl(ScheduledUrlRepository scheduledUrlRepository, SystemService systemService, IdGenerator idGenerator) {
         this.scheduledUrlRepository = scheduledUrlRepository;
+        this.systemService = systemService;
         this.idGenerator = idGenerator;
     }
 
@@ -26,7 +30,10 @@ public class SchedulingServiceImpl implements SchedulingService {
             throw new ResourceConflictException("url=%s is already scheduled for userId=%s".formatted(url, userId));
         }
 
-        return scheduledUrlRepository.save(new ScheduledUrl(idGenerator.generate(), url, userId));
+        String id = idGenerator.generate();
+        Instant timestamp = systemService.timestamp();
+
+        return scheduledUrlRepository.save(new ScheduledUrl(id, url, userId, timestamp));
     }
 
     @Override

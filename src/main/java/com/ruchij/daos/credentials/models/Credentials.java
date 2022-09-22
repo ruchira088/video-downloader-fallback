@@ -2,8 +2,6 @@ package com.ruchij.daos.credentials.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,11 +15,10 @@ public class Credentials {
     @Id
     private String userId;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
+    @Column(nullable = false)
     private Instant updatedAt;
 
     @Column(nullable = false)
@@ -29,8 +26,10 @@ public class Credentials {
 
     protected Credentials() {}
 
-    public Credentials(String userId, String hashedPassword) {
+    public Credentials(String userId, String hashedPassword, Instant timestamp) {
         this.userId = userId;
         this.hashedPassword = hashedPassword;
+        this.createdAt = timestamp;
+        this.updatedAt = timestamp;
     }
 }
