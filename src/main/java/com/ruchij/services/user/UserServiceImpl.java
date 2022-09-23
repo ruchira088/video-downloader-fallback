@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         credentialsRepository.save(new Credentials(userId, encodedPassword, timestamp));
 
         String roleId = idGenerator.generate();
-        Role role = authorizationRepository.save(new Role(roleId, timestamp, userId, RoleType.USER));
+        Role role = authorizationRepository.save(new Role(roleId, timestamp, userId, RoleType.ROLE_USER));
 
         user.setRoles(List.of(role));
 

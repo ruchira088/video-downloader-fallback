@@ -1,11 +1,10 @@
 package com.ruchij.daos.schedules.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 
 @Setter
@@ -18,19 +17,29 @@ public class ScheduledUrl {
     @Column(nullable = false)
     private Instant createdAt;
 
+    @JsonIgnore
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @Column(nullable = false)
     private String userId;
 
     @Column(nullable = false)
     private String url;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     protected ScheduledUrl() {
     }
 
-    public ScheduledUrl(String id, String url, String userId, Instant createdAt) {
+    public ScheduledUrl(String id, String url, String userId, Instant timestamp, Status status) {
         this.id = id;
         this.url = url;
         this.userId = userId;
-        this.createdAt = createdAt;
+        this.createdAt = timestamp;
+        this.updatedAt = timestamp;
+        this.status = status;
     }
 }

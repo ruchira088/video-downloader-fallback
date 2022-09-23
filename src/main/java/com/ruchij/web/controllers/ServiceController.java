@@ -19,7 +19,7 @@ public class ServiceController {
     }
 
     @GetMapping("/info")
-    public ServiceInformation information() throws IOException {
+    public ServiceInformation information() {
         return healthService.serviceInformation();
     }
 

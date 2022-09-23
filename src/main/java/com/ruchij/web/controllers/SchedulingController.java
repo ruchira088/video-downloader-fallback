@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RequestMapping("/schedule")
 @RestController
 public class SchedulingController {
@@ -30,12 +32,12 @@ public class SchedulingController {
 
     @GetMapping
     public ResultsList<ScheduledUrl> getAll(Pageable pageable) {
-        return new ResultsList<>(schedulingService.getAll(pageable).toList(), pageable);
+        return new ResultsList<>(schedulingService.getAll(pageable).toList(), Optional.of(pageable));
     }
 
     @GetMapping("/user/{userId}")
     public ResultsList<ScheduledUrl> getByUser(@PathVariable String userId, Pageable pageable) {
-        return new ResultsList<>(schedulingService.getByUserId(userId, pageable).toList(), pageable);
+        return new ResultsList<>(schedulingService.getByUserId(userId, pageable).toList(), Optional.of(pageable));
     }
 
     @GetMapping("/id/{scheduledUrlId}")
@@ -45,7 +47,7 @@ public class SchedulingController {
 
     @GetMapping("/search")
     public ResultsList<ScheduledUrl> search(@RequestParam String url, Pageable pageable) {
-        return new ResultsList<>(schedulingService.findByUrl(url, getUser().getId()).stream().toList(), pageable);
+        return new ResultsList<>(schedulingService.findByUrl(url, getUser().getId()).stream().toList(), Optional.of(pageable));
     }
 
     private User getUser() {
