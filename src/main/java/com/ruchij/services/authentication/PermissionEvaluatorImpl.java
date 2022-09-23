@@ -1,5 +1,6 @@
 package com.ruchij.services.authentication;
 
+import com.ruchij.daos.authorization.models.RoleType;
 import com.ruchij.daos.user.models.User;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -19,10 +20,12 @@ public class PermissionEvaluatorImpl implements PermissionEvaluator {
         User user = (User) authentication.getPrincipal();
         String type = targetType.toLowerCase();
 
-        if (type.equals("user")) {
+        if (user.getRoles().stream().anyMatch(role -> role.getRoleType() == RoleType.ROLE_ADMIN)) {
+            return true;
+        } else if (type.equals("user")) {
             return user.getId().equals(targetId);
+        } else {
+            return false;
         }
-
-        return false;
     }
 }
