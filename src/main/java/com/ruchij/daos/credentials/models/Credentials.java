@@ -16,9 +16,6 @@ public class Credentials {
     private String userId;
 
     @Column(nullable = false)
-    private Instant createdAt;
-
-    @Column(nullable = false)
     private Instant updatedAt;
 
     @Column(nullable = false)
@@ -30,7 +27,6 @@ public class Credentials {
     public Credentials(String userId, String hashedPassword, Instant timestamp) {
         this.userId = userId;
         this.hashedPassword = hashedPassword;
-        this.createdAt = timestamp;
         this.updatedAt = timestamp;
     }
 }
