@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -41,5 +43,10 @@ public class SecurityConfiguration {
             )
             .csrf().disable()
             .build();
+    }
+
+    @Bean
+    public LogoutHandler logoutHandler() {
+        return new SecurityContextLogoutHandler();
     }
 }
