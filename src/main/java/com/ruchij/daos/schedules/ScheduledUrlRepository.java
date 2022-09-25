@@ -4,6 +4,7 @@ import com.ruchij.daos.schedules.models.ScheduledUrl;
 import com.ruchij.daos.schedules.models.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,7 @@ public interface ScheduledUrlRepository extends PagingAndSortingRepository<Sched
 
     Optional<ScheduledUrl> findScheduledUrlByIdAndUserId(String id, String userId);
 
+    @Modifying
     @Query("UPDATE scheduled_url SET status = :toStatus, updatedAt = :updatedAt WHERE id = :id AND status = :fromStatus")
     int updateStatusById(String id, Status fromStatus, Instant updatedAt, Status toStatus);
 }
