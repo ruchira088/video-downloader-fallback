@@ -1,0 +1,80 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Install dependencies
+      import_tasks: tasks/install-dependencies.yml
+
+    - name: Gather git information
+      import_tasks: tasks/git-info.yml
+
+    - set_fact:
+        namespace: "{{ 'video-downloader-fallback-api' if git_branch == 'main' else 'video-downloader-fallback-api-' + git_branch }}"
+
+    - name: Render K8s resource files
+      import_tasks: tasks/k8s-resource-files.yml
+      vars:
+        domain: fallback-api.dev.ruchij.com
+        hostname: "{{ domain if git_branch == 'main' else git_branch + '.' + domain }}"
+        ghcr_credentials: "{{ lookup('aws_ssm', '/github/ghcr/docker-config', region='ap-southeast-2') }}"
+
+    - name: Set kube_config
+      import_tasks: tasks/k8s-config.yml
+
+    - name: Deploy K8s resources
+      block:
+        - name: Create Namespace
+          command: kubectl apply -f k8s-output/Namespace.yaml --kubeconfig {{ kubeconfig }}
+
+        - name: Create Docker registry secret
+          command: kubectl apply -f k8s-output/DockerRegistryCredentials.yaml --kubeconfig {{ kubeconfig }}
+
+        - name: Deploy PostgreSQL via Helm charts
+          block:
+            - name: Add Bitnami Helm charts repository
+              command: helm repo add bitnami https://charts.bitnami.com/bitnami
+
+            - name: Update Helm repositories
+              command: helm repo update
+
+            - name: Check Postgresql service in K8s
+              k8s_info:
+                kind: Service
+                namespace: "{{ namespace }}"
+                name: postgresql
+                kubeconfig: "{{ kubeconfig }}"
+              register: postgresql_output
+
+            - name: Install Postgres Helm chart
+              shell: |
+                KUBECONFIG={{ kubeconfig }} \
+                  helm install postgresql \
+                    --set global.postgresql.auth.username="{{ secrets.DATABASE_USER }}" \
+                    --set global.postgresql.auth.password="{{ secrets.DATABASE_PASSWORD }}" \
+                    --set global.postgresql.auth.database=fallback-api \
+                    --namespace {{ namespace }} \
+                    bitnami/postgresql
+              when: postgresql_output.resources | length == 0
+
+        - name: Deploy Fallback API
+          block:
+          - name: Create data ConfigMap
+            command: kubectl apply -f k8s-output/DataConfigMap.yaml --kubeconfig {{ kubeconfig }}
+
+          - name: Create file ConfigMap
+            command: kubectl apply -f k8s-output/FileConfigMap.yaml --kubeconfig {{ kubeconfig }}
+
+          - name: Create Secrets
+            command: kubectl apply -f k8s-output/Secrets.yaml --kubeconfig {{ kubeconfig }}
+
+#          - name: Deploy application
+#            command: kubectl apply -f k8s-output --kubeconfig {{ kubeconfig }}
+#
+#          - name: Wait for successful deployment
+#            command: kubectl rollout status deployment fallback-api-deployment --kubeconfig {{ kubeconfig }} -n {{ namespace }}
+
+    - name: Clean up output directory
+      file:
+        path: k8s-output
+        state: absent
