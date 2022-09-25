@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fallback-api-deployment
+  namespace: {{ namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: fallback-api
+      branch: {{ git_branch }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fallback-api
+        branch: {{ git_branch }}
+    spec:
+      containers:
+        - name: fallback-api-container
+          image: ghcr.io/ruchira088/video-downloader-fallback-api:{{ git_branch }}-{{ git_commit }}
+          envFrom:
+            - configMapRef:
+                name: fallback-api-data-config-map
+            - secretRef:
+                name: fallback-api-secrets
+          readinessProbe:
+            httpGet:
+              port: springboot-port
+              path: /service/info
+              httpHeaders:
+                - name: X-Correlation-ID
+                  value: k8s-readiness-probe
+          livenessProbe:
+            httpGet:
+              port: springboot-port
+              path: /service/info
+              httpHeaders:
+                - name: X-Correlation-ID
+                  value: k8s-liveness-probe
+          startupProbe:
+            httpGet:
+              port: springboot-port
+              path: /service/info
+              httpHeaders:
+                - name: X-Correlation-ID
+                  value: k8s-startup-probe
+          ports:
+            - containerPort: 8080
+              name: springboot-port
+          volumeMounts:
+            - mountPath: /opt/data
+              name: file-config-map
+      volumes:
+        - name: file-config-map
+          configMap:
+            name: fallback-api-file-config-map
+      imagePullSecrets:
+        - name: docker-registry-credentials
