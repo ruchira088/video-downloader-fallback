@@ -38,7 +38,7 @@ public class SecurityConfiguration {
             )
             .formLogin(formLoginConfigurer ->
                 formLoginConfigurer
-                    .defaultSuccessUrl("/authentication/user")
+                    .defaultSuccessUrl("/authentication/user", true)
                     .permitAll()
             )
             .csrf().disable()

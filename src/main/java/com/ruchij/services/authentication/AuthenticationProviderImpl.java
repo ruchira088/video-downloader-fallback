@@ -11,6 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 @Component
 public class AuthenticationProviderImpl implements AuthenticationProvider {
     private final UserRepository userRepository;
@@ -27,6 +29,7 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = (String) authentication.getPrincipal();
