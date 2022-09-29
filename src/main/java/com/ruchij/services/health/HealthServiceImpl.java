@@ -58,7 +58,7 @@ public class HealthServiceImpl implements HealthService {
 
     private HealthStatus waitUntilTimeout(CompletableFuture<HealthStatus> healthStatus) {
         try {
-            return healthStatus.get(10, TimeUnit.SECONDS);
+            return healthStatus.get(5, TimeUnit.SECONDS);
         } catch (Exception exception) {
             return HealthStatus.UNHEALTHY;
         }
