@@ -32,7 +32,7 @@ public class User implements Serializable {
 
     private String lastName;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private List<Role> roles;
 
