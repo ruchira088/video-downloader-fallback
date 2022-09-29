@@ -14,17 +14,17 @@ public class ScheduledUrl {
     @Id
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     @JsonIgnore
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String url;
 
     @Column(nullable = false)

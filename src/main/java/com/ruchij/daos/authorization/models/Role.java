@@ -16,11 +16,11 @@ public class Role implements Serializable {
     private String id;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String userId;
 
     @Column(nullable = false)

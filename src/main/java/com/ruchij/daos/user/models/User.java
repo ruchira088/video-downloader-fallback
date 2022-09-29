@@ -17,7 +17,7 @@ public class User implements Serializable {
     @Id
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     @JsonIgnore
