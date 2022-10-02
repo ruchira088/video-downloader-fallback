@@ -29,7 +29,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           path: |
             ~/.gradle
-          restore: |
+          restore-keys: |
             ${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-
 
@@ -82,7 +82,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           path: |
             ~/.gradle
-          restore: |
+          restore-keys: |
             ${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-
 
