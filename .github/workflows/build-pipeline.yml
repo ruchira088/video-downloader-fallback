@@ -33,8 +33,8 @@ jobs:
             ${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-
 
-      - name: Compile
-        run: ./gradlew compileJava
+      - name: Assemble
+        run: ./gradlew assemble
 
       - name: Execute test suite
         run: ./gradlew test
