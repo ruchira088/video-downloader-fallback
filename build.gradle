@@ -73,6 +73,14 @@ classes {
     dependsOn information
 }
 
+release {
+    pushReleaseVersionBranch = "main"
+
+    git {
+        requireBranch.set('dev')
+    }
+}
+
 bootJar {
     archiveName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
