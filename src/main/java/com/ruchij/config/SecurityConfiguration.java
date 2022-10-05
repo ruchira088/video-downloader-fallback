@@ -1,6 +1,6 @@
 package com.ruchij.config;
 
-import com.ruchij.web.filters.AdminAuthFilter;
+import com.ruchij.web.filters.BearerTokenAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,8 +32,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AdminAuthFilter adminAuthFilter) throws Exception {
-        httpSecurity.addFilterBefore(adminAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, BearerTokenAuthFilter bearerTokenAuthFilter) throws Exception {
+        httpSecurity.addFilterBefore(bearerTokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity
             .cors().and()
