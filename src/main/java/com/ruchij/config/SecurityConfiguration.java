@@ -15,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +36,7 @@ public class SecurityConfiguration {
         httpSecurity.addFilterBefore(adminAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity
+            .cors().and()
             .authorizeHttpRequests(requests ->
                 requests
                     .antMatchers(HttpMethod.POST, "/user", "/authentication/login").permitAll()
@@ -47,6 +50,16 @@ public class SecurityConfiguration {
             )
             .csrf().disable()
             .build();
+    }
+
+    @Bean
+    public WebMvcConfigurer configurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry corsRegistry) {
+                corsRegistry.addMapping("/**").allowedOriginPatterns("**").allowCredentials(true);
+            }
+        };
     }
 
     @Bean
