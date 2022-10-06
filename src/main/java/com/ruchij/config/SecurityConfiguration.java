@@ -1,6 +1,6 @@
 package com.ruchij.config;
 
-import com.ruchij.web.filters.AdminAuthFilter;
+import com.ruchij.web.filters.BearerTokenAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -30,10 +32,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AdminAuthFilter adminAuthFilter) throws Exception {
-        httpSecurity.addFilterBefore(adminAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, BearerTokenAuthFilter bearerTokenAuthFilter) throws Exception {
+        httpSecurity.addFilterBefore(bearerTokenAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity
+            .cors().and()
             .authorizeHttpRequests(requests ->
                 requests
                     .antMatchers(HttpMethod.POST, "/user", "/authentication/login").permitAll()
@@ -47,6 +50,16 @@ public class SecurityConfiguration {
             )
             .csrf().disable()
             .build();
+    }
+
+    @Bean
+    public WebMvcConfigurer configurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry corsRegistry) {
+                corsRegistry.addMapping("/**").allowedOriginPatterns("**").allowCredentials(true);
+            }
+        };
     }
 
     @Bean

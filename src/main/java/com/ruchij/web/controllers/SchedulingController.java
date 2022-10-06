@@ -46,7 +46,7 @@ public class SchedulingController {
     }
 
     @GetMapping("/search")
-    public ResultsList<ScheduledUrl> search(@RequestParam String videoUrl, Pageable pageable) {
+    public ResultsList<ScheduledUrl> search(@RequestParam(name = "video-url") String videoUrl, Pageable pageable) {
         return new ResultsList<>(schedulingService.findByUrl(videoUrl, getUser().getId()).stream().toList(), Optional.of(pageable));
     }
 
