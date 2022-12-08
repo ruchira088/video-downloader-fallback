@@ -39,8 +39,8 @@ public class SecurityConfiguration {
             .cors().and()
             .authorizeHttpRequests(requests ->
                 requests
-                    .antMatchers(HttpMethod.POST, "/user", "/authentication/login").permitAll()
-                    .antMatchers(HttpMethod.GET, "/service/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/user", "/authentication/login").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/service/**").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(formLoginConfigurer ->

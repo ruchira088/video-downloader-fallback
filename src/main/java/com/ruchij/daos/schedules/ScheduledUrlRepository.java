@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Repository
-public interface ScheduledUrlRepository extends PagingAndSortingRepository<ScheduledUrl, String> {
+public interface ScheduledUrlRepository extends PagingAndSortingRepository<ScheduledUrl, String>,
+    ListCrudRepository<ScheduledUrl, String> {
     Page<ScheduledUrl> findScheduledUrlsByUserId(String userId, Pageable pageable);
 
     Page<ScheduledUrl> findByStatus(Status status, Pageable pageable);
