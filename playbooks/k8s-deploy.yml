@@ -53,6 +53,7 @@
                     --set global.postgresql.auth.username="{{ secrets.DATABASE_USER }}" \
                     --set global.postgresql.auth.password="{{ secrets.DATABASE_PASSWORD }}" \
                     --set global.postgresql.auth.database=fallback-api \
+                    --set image.tag=15.1.0-debian-11-r12 \
                     --namespace {{ namespace }} \
                     bitnami/postgresql
               when: postgresql_output.resources | length == 0
