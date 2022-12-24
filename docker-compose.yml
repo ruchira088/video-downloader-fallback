@@ -19,7 +19,7 @@ services:
       - "./docker-compose/scripts:/opt/scripts"
 
   fallback-api:
-    image: ghcr.io/ruchira088/video-downloader-fallback-api:main
+    image: ghcr.io/ruchira088/video-downloader-fallback-api:dev
     depends_on:
       postgres:
         condition: service_healthy
